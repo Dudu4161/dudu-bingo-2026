@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dudu Bingo 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    min-height: 100vh;
+    padding: 15px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  .box {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .box label { font-size: 13px; display: block; margin-bottom: 6px; }
+  .box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .box button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #ffd700;
+    color: #1e3c72;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .box button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .last-ball {
+    background: rgba(255,255,255,0.15);
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .last-ball .label { font-size: 11px; letter-spacing: 2px; opacity: 0.7; }
+  .last-ball .ball {
+    display: inline-block;
+    width: 65px;
+    height: 65px;
+    line-height: 65px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #1e3c72;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 6px;
+  }
+  .recent {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    min-height: 28px;
+  }
+  .recent span {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .stats .item { text-align: center; }
+  .stats .num { font-size: 18px; font-weight: bold; color: #ffd700; }
+  .cards-nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .cards-nav button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .cards-nav .info {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffd700;
+    min-width: 100px;
+    text-align: center;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    background: #ffd700;
+    padding: 7px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: #fff;
+    color: #1e3c72;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+  }
+  .cell.marked {
+    background: #1e3c72;
+    color: #ffd700;
+    transform: scale(0.95);
+  }
+  .cell.free {
+    background: #1e3c72;
+    color: #ffd700;
+    font-size: 13px;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .btn {
+    padding: 13px 8px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn.call { background: #ffd700; color: #1e3c72; }
+  .btn.auto { background: #4caf50; color: #fff; }
+  .btn.stop { background: #f44336; color: #fff; }
+  .btn.new { background: #2196f3; color: #fff; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .timer {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 10px;
+  }
+  .players {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .players .player {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .players .admin { color: #ffd700; font-weight: bold; }
+  .rules {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+  }
+  .rules strong { color: #ffd700; }
+  .popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffd700;
+    color: #1e3c72;
+    padding: 30px 40px;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    z-index: 999;
+  }
+  .admin-badge {
+    background: #ffd700;
+    color: #1e3c72;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎯 DUDU BINGO 2026</h1>
+
+  <div id="loginSection">
+    <div class="box">
+      <label>ስምህን ጻፍ፦</label>
+      <input type="text" id="playerName" placeholder="e.g. Dudu" maxlength="20">
+      <label>የክፍል ኮድ (Room Code)፦</label>
+      <input type="text" id="roomCode" placeholder="e.g. 1234" maxlength="6">
+      <button onclick="joinRoom()" id="joinBtn">🚪 ግባ</button>
+    </div>
+  </div>
+
+  <div id="gameSection" style="display:none;">
+    <div style="text-align:center;">
+      <span class="admin-badge" id="adminBadge" style="display:none;">👑 አድሚን</span>
+      <span class="admin-badge" id="roomBadge">ክፍል: -</span>
+    </div>
+
+    <div class="last-ball">
+      <div class="label">LAST CALLED</div>
+      <div class="ball" id="lastBall">-</div>
+    </div>
+
+    <div class="recent" id="recent"></div>
+
+    <div class="stats">
+      <div class="item">
+        <div class="num" id="calledCount">0</div>
+        <div>የተጠሩ</div>
+      </div>
+      <div class="item">
+        <div class="num" id="remainCount">75</div>
+        <div>የቀሩ</div>
+      </div>
+      <div class="item">
+        <div class="num" id="playersCount">1</div>
+        <div>ተጫዋቾች</div>
+      </div>
+    </div>
+
+    <div class="players" id="playersList">
+      <div style="text-align:center; opacity:0.7;">ተጫዋቾች በመጫን ላይ...</div>
+    </div>
+
+    <div class="box" id="cardSelectSection">
+      <label>የካርድ ብዛት ምረጥ (1-600)፦</label>
+      <input type="number" id="cardCount" value="1" min="1" max="600">
+      <button onclick="selectCards()">🎴 ካርዶች ምረጥ</button>
+      <div class="timer" id="timerDisplay" style="display:none;">⏱️ 30</div>
+    </div>
+
+    <div class="cards-nav" id="cardsNav" style="display:none;">
+      <button onclick="prevCard()">◀ ያለፈ</button>
+      <div class="info" id="cardInfo">ካርድ 1 / 1</div>
+      <button onclick="nextCard()">ቀጣይ ▶</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="buttons" id="adminButtons" style="display:none;">
+      <button class="btn call" id="callBtn" onclick="callNum()">📢 Call Number</button>
+      <button class="btn auto" id="autoBtn" onclick="toggleAuto()">▶ Auto Call</button>
+    </div>
+
+    <div class="buttons">
+      <button class="btn new" onclick="resetGame()">♻️ አዲስ ጨዋታ</button>
+      <button class="btn new" onclick="leaveRoom()">🚪 ውጣ</button>
+    </div>
+
+    <div class="status" id="status">ዝግጁ ነው...</div>
+
+    <div class="rules">
+      <strong>📋 የማሸነፊያ ህጎች፦</strong><br><br>
+      <strong>1️⃣ ሰያፍ</strong> — 4 ተከታታይ ሳጥኖች<br>
+      <strong>2️⃣ ቀጥታ</strong> — 4 ተከታታይ ሳጥኖች<br>
+      <strong>3️⃣ አግድም</strong> — 5 ሳጥኖች ሙሉ<br>
+      <strong>4️⃣ ማዕዘን</strong> — 4ቱም ማዕዘኖች
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup">
+  🎉 BINGO! 🎉<br>
+  <button onclick="closePopup()" style="margin-top:15px; padding:10px 25px; border-radius:10px; border:none; background:#1e3c72; color:#ffd700; font-size:16px; font-weight:bold; cursor:pointer;">እሺ</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBviQuIil06bUumjd0mIgsdUXs4rU_5-RE",
+  authDomain: "dudu-bingo-v2.firebaseapp.com",
+  projectId: "dudu-bingo-v2",
+  storageBucket: "dudu-bingo-v2.firebasestorage.app",
+  messagingSenderId: "336020243425",
+  appId: "1:336020243425:web:0d3a1f0254d7a7c8f188a0",
+  measurementId: "G-RE4FYQXG3P"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let playerName = '';
+let roomCode = '';
+let isAdmin = false;
+let myCards = [];
+let activeCardIndex = 0;
+let marked = new Set();
+let timer = null;
+let timerInterval = null;
+let running = false;
+let unsubscribeRoom = null;
+let unsubscribePlayers = null;
+let roomData = null;
+
+window.joinRoom = async function() {
+  const nameInput = document.getElementById('playerName').value.trim();
+  const codeInput = document.getElementById('roomCode').value.trim();
+
+  if (!nameInput) { alert('ስምህን ጻፍ!'); return; }
+  if (!codeInput) { alert('የክፍል ኮድ ጻፍ!'); return; }
+
+  playerName = nameInput;
+  roomCode = codeInput;
+
+  const roomRef = doc(db, 'rooms', roomCode);
+  const roomSnap = await getDoc(roomRef);
+
+  if (!roomSnap.exists()) {
+    isAdmin = true;
+    await setDoc(roomRef, {
+      admin: playerName,
+      createdAt: Date.now(),
+      called: [],
+      available: Array.from({length: 75}, (_, i) => i + 1),
+      lastCalled: null,
+      gameState: 'selecting',
+      timerEnd: Date.now() + 30000
+    });
+  } else {
+    const data = roomSnap.data();
+    isAdmin = (data.admin === playerName);
+  }
+
+  await setDoc(doc(db, 'rooms', roomCode, 'players', playerName), {
+    name: playerName,
+    joinedAt: Date.now(),
+    isAdmin: isAdmin,
+    cards: []
+  });
+
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('gameSection').style.display = 'block';
+  document.getElementById('roomBadge').textContent = 'ክፍል: ' + roomCode;
+
+  if (isAdmin) {
+    document.getElementById('adminBadge').style.display = 'inline-block';
+    document.getElementById('adminButtons').style.display = 'grid';
+  }
+
+  listenToRoom();
+  listenToPlayers();
+};
+
+function listenToRoom() {
+  if (unsubscribeRoom) unsubscribeRoom();
+  unsubscribeRoom = onSnapshot(doc(db, 'rooms', roomCode), (snap) => {
+    if (!snap.exists()) return;
+    roomData = snap.data();
+    renderRoom();
+  });
+}
+
+function renderRoom() {
+  if (!roomData) return;
+  const called = roomData.called || [];
+  const available = roomData.available || [];
+
+  document.getElementById('calledCount').textContent = called.length;
+  document.getElementById('remainCount').textContent = available.length;
+  document.getElementById('lastBall').textContent = roomData.lastCalled || '-';
+
+  const recent = document.getElementById('recent');
+  recent.innerHTML = '';
+  called.slice(-8).reverse().forEach(n => {
+    const s = document.createElement('span');
+    s.textContent = n;
+    recent.appendChild(s);
+  });
+
+  if (roomData.gameState === 'playing') {
+    checkMyBingo();
+  }
+
+  if (roomData.gameState === 'selecting' && roomData.timerEnd) {
+    startTimer(roomData.timerEnd);
+  } else {
+    stopTimer();
+  }
+}
+
+function listenToPlayers() {
+  if (unsubscribePlayers) unsubscribePlayers();
+  unsubscribePlayers = onSnapshot(collection(db, 'rooms', roomCode, 'players'), (snap) => {
+    const list = document.getElementById('playersList');
+    list.innerHTML = '';
+    document.getElementById('playersCount').textContent = snap.size;
+
+    snap.forEach(d => {
+      const p = d.data();
+      const div = document.createElement('div');
+      div.className = 'player';
+      div.innerHTML = `<span class="${p.isAdmin ? 'admin' : ''}">${p.isAdmin ? '👑 ' : '👤 '}${p.name}</span><span>${p.cards ? p.cards.length : 0} ካርድ</span>`;
+      list.appendChild(div);
+    });
+  });
+}
+
+window.selectCards = async function() {
+  const count = parseInt(document.getElementById('cardCount').value);
+  if (isNaN(count) || count < 1 || count > 600) { alert('1-600 ብቻ!'); return; }
+
+  myCards = [];
+  for (let i = 0; i < count; i++) {
+    myCards.push(generateSingleCard());
+  }
+  activeCardIndex = 0;
+  marked = new Set();
+  renderCard(activeCardIndex);
+
+  await updateDoc(doc(db, 'rooms', roomCode, 'players', playerName), {
+    cards: myCards
+  });
+
+  document.getElementById('cardsNav').style.display = 'flex';
+  document.getElementById('cardSelectSection').style.display = 'none';
+  document.getElementById('status').textContent = `${count} ካርድ ተመርጧል!`;
+};
+
+function startTimer(endTime) {
+  stopTimer();
+  timerInterval = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+    const el = document.getElementById('timerDisplay');
+    el.style.display = 'block';
+    el.textContent = '⏱️ ' + remaining;
+    if (remaining <= 0) {
+      stopTimer();
+      el.textContent = '⏱️ ጊዜ አልቋል!';
+      if (isAdmin && roomData.gameState === 'selecting') {
+        startGame();
+      }
+    }
+  }, 200);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+async function startGame() {
+  if (!isAdmin) return;
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    gameState: 'playing',
+    available: Array.from({length: 75}, (_, i) => i + 1),
+    called: [],
+    lastCalled: null,
+    timerEnd: null
+  });
+  document.getElementById('status').textContent = 'ጨዋታ ተጀምሯል!';
+}
+
+window.callNum = async function() {
+  if (!isAdmin) { alert('አድሚን ብቻ!'); return; }
+  const available = roomData.available || [];
+  if (available.length === 0) { stopAuto(); return; }
+
+  const i = Math.floor(Math.random() * available.length);
+  const n = available[i];
+  const newAvailable = available.filter(x => x !== n);
+  const newCalled = [...(roomData.called || []), n];
+
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    available: newAvailable,
+    called: newCalled,
+    lastCalled: n
+  });
+
+  autoMark(n);
+};
+
+window.toggleAuto = function() {
+  running ? stopAuto() : startAuto();
+};
+
+function startAuto() {
+  if (!isAdmin) return;
+  running = true;
+  document.getElementById('autoBtn').textContent = '⏸ Stop Auto';
+  document.getElementById('autoBtn').className = 'btn stop';
+  document.getElementById('status').textContent = 'ቁጥሮች በራሳቸው እየተጠሩ ነው...';
+  timer = setInterval(callNum, 3000);
+}
+
+function stopAuto() {
+  running = false;
+  if (timer) { clearInterval(timer); timer = null; }
+  const btn = document.getElementById('autoBtn');
+  if (btn) {
+    btn.textContent = '▶ Auto Call';
+    btn.className = 'btn auto';
+  }
+}
+
+function generateSingleCard() {
+  const ranges = [
+    {min:1, max:15}, {min:16, max:30}, {min:31, max:45},
+    {min:46, max:60}, {min:61, max:75}
+  ];
+  const card = [];
+  for (let c = 0; c < 5; c++) {
+    let col = [];
+    const r = ranges[c];
+    while (col.length < 5) {
+      const n = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      if (!col.includes(n)) col.push(n);
+    }
+    card.push(col);
+  }
+  return card;
+}
+
+function renderCard(index) {
+  const card = myCards[index];
+  if (!card) return;
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (r === 2 && c === 2) {
+        d.textContent = 'FREE';
+        d.classList.add('free');
+        d.dataset.num = 'FREE';
+      } else {
+        d.textContent = card[c][r];
+        d.dataset.num = card[c][r];
+      }
+      d.onclick = () => toggleCell(d);
+      g.appendChild(d);
+    }
+  }
+  document.getElementById('cardInfo').textContent = `ካርድ ${index + 1} / ${myCards.length}`;
+}
+
+window.nextCard = function() {
+  if (myCards.length <= 1) return;
+  activeCardIndex = (activeCardIndex + 1) % myCards.length;
+  renderCard(activeCardIndex);
+};
+
+window.prevCard = function() {
+  if (myCards.length <= 1) return;
+  activeCardIndex = (activeCardIndex - 1 + myCards.length) % myCards.length;
+  renderCard(activeCardIndex);
+};
+
+function toggleCell(d) {
+  if (d.dataset.num === 'FREE') return;
+  d.classList.toggle('marked');
+  const n = parseInt(d.dataset.num);
+  d.classList.contains('marked') ? marked.add(n) : marked.delete(n);
+}
+
+function autoMark(n) {
+  document.querySelectorAll('.cell').forEach(c => {
+    if (parseInt(c.dataset.num) === n) {
+      c.classList.add('marked');
+      marked.add(n);
+    }
+  });
+}
+
+function checkMyBingo() {
+  const cells = document.querySelectorAll('.cell');
+  if (cells.length === 0) return;
+  const g = [];
+  let i = 0;
+  for (let r = 0; r < 5; r++) {
+    g[r] = [];
+    for (let c = 0; c < 5; c++) {
+      const cl = cells[i];
+      g[r][c] = (cl.dataset.num === 'FREE') ? true : cl.classList.contains('marked');
+      i++;
+    }
+  }
+
+  for (let start = 0; start <= 1; start++) {
+    let count = 0;
+    for (let i = start; i < start + 4; i++) if (g[i][i]) count++;
+    if (count >= 4) { showBingo(); return; }
+  }
+  for (let start = 0; start <= 1; start++) {
+    let count = 0;
+    for (let i = start; i < start + 4; i++) if (g[i][4 - i]) count++;
+    if (count >= 4) { showBingo(); return; }
+  }
+
+  for (let c = 0; c < 5; c++) {
+    for (let start = 0; start <= 1; start++) {
+      let count = 0;
+      for (let r = start; r < start + 4; r++) if (g[r][c]) count++;
+      if (count >= 4) { showBingo(); return; }
+    }
+  }
+
+  for (let r = 0; r < 5; r++) {
+    if (g[r].every(v => v)) { showBingo(); return; }
+  }
+
+  if (g[0][0] && g[0][4] && g[4][0] && g[4][4]) {
+    showBingo(); return;
+  }
+}
+
+function showBingo() {
+  stopAuto();
+  document.getElementById('popup').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
+  document.getElementById('status').textContent = '🎉 አሸንፈሃል! BINGO! 🎉';
+}
+
+window.closePopup = function() {
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+};
+
+window.resetGame = async function() {
+  if (!isAdmin) { alert('አድሚን ብቻ!'); return; }
+  if (!confirm('አዲስ ጨዋታ ጀምር?')) return;
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    gameState: 'selecting',
+    called: [],
+    available: Array.from({length: 75}, (_, i) => i + 1),
+    lastCalled: null,
+    timerEnd: Date.now() + 30000
+  });
+  document.getElementById('cardSelectSection').style.display = 'block';
+  document.getElementById('cardsNav').style.display = 'none';
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('status').textContent = 'አዲስ ጨዋታ! ካርድ ምረጥ።';
+};
+
+window.leaveRoom = async function() {
+  if (unsubscribeRoom) unsubscribeRoom();
+  if (unsubscribePlayers) unsubscribePlayers();
+  stopAuto();
+  stopTimer();
+  await deleteDoc(doc(db, 'rooms', roomCode, 'players', playerName));
+  location.reload();
+};
+</script>
+</body>
+</html>
