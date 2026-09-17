@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dudu Bingo 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    min-height: 100vh;
+    padding: 15px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 15px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  .card-selector {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .card-selector label { font-size: 14px; white-space: nowrap; }
+  .card-selector input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    min-width: 0;
+  }
+  .card-selector button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: #ffd700;
+    color: #1e3c72;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .last-ball {
+    background: rgba(255,255,255,0.15);
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .last-ball .label { font-size: 11px; letter-spacing: 2px; opacity: 0.7; }
+  .last-ball .ball {
+    display: inline-block;
+    width: 65px;
+    height: 65px;
+    line-height: 65px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #1e3c72;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 6px;
+  }
+  .recent {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    min-height: 28px;
+  }
+  .recent span {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    background: #ffd700;
+    padding: 7px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: #fff;
+    color: #1e3c72;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+  }
+  .cell.marked {
+    background: #1e3c72;
+    color: #ffd700;
+    transform: scale(0.95);
+  }
+  .cell.free {
+    background: #1e3c72;
+    color: #ffd700;
+    font-size: 13px;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .btn {
+    padding: 13px 8px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn.call { background: #ffd700; color: #1e3c72; }
+  .btn.auto { background: #4caf50; color: #fff; }
+  .btn.stop { background: #f44336; color: #fff; }
+  .btn.new { background: #2196f3; color: #fff; }
+  .status {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+  .popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffd700;
+    color: #1e3c72;
+    padding: 30px 40px;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    z-index: 999;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎯 DUDU BINGO 2026</h1>
+
+  <div class="card-selector">
+    <label>ካርዶች፦</label>
+    <input type="number" id="cardCount" value="1" min="1" max="600">
+    <button onclick="setCardCount()">አስገባ</button>
+  </div>
+
+  <div class="last-ball">
+    <div class="label">LAST CALLED</div>
+    <div class="ball" id="lastBall">-</div>
+  </div>
+
+  <div class="recent" id="recent"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="buttons">
+    <button class="btn call" id="callBtn" onclick="callNum()">📢 Call Number</button>
+    <button class="btn auto" id="autoBtn" onclick="toggleAuto()">▶ Auto Call</button>
+  </div>
+
+  <div class="buttons">
+    <button class="btn new" onclick="newCard()">🔄 New Card</button>
+    <button class="btn new" onclick="resetGame()">♻️ Reset Game</button>
+  </div>
+
+  <div class="status" id="status">ዝግጁ ነው...</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup">
+  🎉 BINGO! 🎉<br>
+  <button onclick="closePopup()" style="margin-top:15px; padding:10px 25px; border-radius:10px; border:none; background:#1e3c72; color:#ffd700; font-size:16px; font-weight:bold; cursor:pointer;">እሺ</button>
+</div>
+
+<script>
+let called = [];
+let available = [];
+let timer = null;
+let running = false;
+let cards = [];
+let activeCardIndex = 0;
+let marked = new Set();
+let totalCards = 1;
+
+function init() {
+  available = [];
+  for (let i = 1; i <= 75; i++) available.push(i);
+  called = [];
+  marked = new Set();
+
+  generateAllCards(totalCards);
+  activeCardIndex = 0;
+  renderCard(activeCardIndex);
+
+  document.getElementById('lastBall').textContent = '-';
+  document.getElementById('recent').innerHTML = '';
+  document.getElementById('status').textContent = 'አዲስ ጨዋታ ተጀመረ!';
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+}
+
+function generateAllCards(count) {
+  cards = [];
+  for (let k = 0; k < count; k++) {
+    cards.push(generateSingleCard());
+  }
+}
+
+function generateSingleCard() {
+  const ranges = [
+    {min:1, max:15}, {min:16, max:30}, {min:31, max:45},
+    {min:46, max:60}, {min:61, max:75}
+  ];
+  const card = [];
+  for (let c = 0; c < 5; c++) {
+    let col = [];
+    const r = ranges[c];
+    while (col.length < 5) {
+      const n = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      if (!col.includes(n)) col.push(n);
+    }
+    card.push(col);
+  }
+  return card;
+}
+
+function renderCard(index) {
+  const card = cards[index];
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (r === 2 && c === 2) {
+        d.textContent = 'FREE';
+        d.classList.add('free');
+        d.dataset.num = 'FREE';
+      } else {
+        d.textContent = card[c][r];
+        d.dataset.num = card[c][r];
+      }
+      d.onclick = () => toggleCell(d);
+      g.appendChild(d);
+    }
+  }
+  document.getElementById('status').textContent = `ካርድ ${index + 1} / ${cards.length}`;
+}
+
+function setCardCount() {
+  const input = document.getElementById('cardCount');
+  let val = parseInt(input.value);
+  if (isNaN(val) || val < 1) val = 1;
+  if (val > 600) val = 600;
+  totalCards = val;
+  input.value = val;
+  newCard();
+}
+
+function newCard() {
+  stopAuto();
+  init();
+}
+
+function resetGame() {
+  stopAuto();
+  init();
+  document.getElementById('status').textContent = 'ጨዋታ ተጀምሯል!';
+}
+
+function toggleAuto() {
+  running ? stopAuto() : startAuto();
+}
+
+function startAuto() {
+  if (available.length === 0) {
+    document.getElementById('status').textContent = 'ሁሉም ቁጥሮች ተጠርተዋል!';
+    return;
+  }
+  running = true;
+  document.getElementById('autoBtn').textContent = '⏸ Stop Auto';
+  document.getElementById('autoBtn').className = 'btn stop';
+  document.getElementById('status').textContent = 'ቁጥሮች በራሳቸው እየተጠሩ ነው...';
+  timer = setInterval(callNum, 3000);
+}
+
+function stopAuto() {
+  running = false;
+  if (timer) { clearInterval(timer); timer = null; }
+  const btn = document.getElementById('autoBtn');
+  if (btn) {
+    btn.textContent = '▶ Auto Call';
+    btn.className = 'btn auto';
+  }
+}
+
+function callNum() {
+  if (available.length === 0) { stopAuto(); return; }
+  const i = Math.floor(Math.random() * available.length);
+  const n = available.splice(i, 1)[0];
+  called.push(n);
+  document.getElementById('lastBall').textContent = n;
+  updateRecent();
+  autoMark(n);
+}
+
+function updateRecent() {
+  const c = document.getElementById('recent');
+  c.innerHTML = '';
+  called.slice(-6).forEach(n => {
+    const s = document.createElement('span');
+    s.textContent = n;
+    c.appendChild(s);
+  });
+}
+
+function toggleCell(d) {
+  if (d.dataset.num === 'FREE') return;
+  d.classList.toggle('marked');
+  const n = parseInt(d.dataset.num);
+  d.classList.contains('marked') ? marked.add(n) : marked.delete(n);
+  checkBingo();
+}
+
+function autoMark(n) {
+  document.querySelectorAll('.cell').forEach(c => {
+    if (parseInt(c.dataset.num) === n) {
+      c.classList.add('marked');
+      marked.add(n);
+    }
+  });
+  checkBingo();
+}
+
+function checkBingo() {
+  const g = [];
+  const cells = document.querySelectorAll('.cell');
+  let i = 0;
+  for (let r = 0; r < 5; r++) {
+    g[r] = [];
+    for (let c = 0; c < 5; c++) {
+      const cl = cells[i];
+      g[r][c] = (cl.dataset.num === 'FREE') ? true : cl.classList.contains('marked');
+      i++;
+    }
+  }
+  for (let r = 0; r < 5; r++) if (g[r].every(v => v)) { bingo(); return; }
+  for (let c = 0; c < 5; c++) {
+    let w = true;
+    for (let r = 0; r < 5; r++) if (!g[r][c]) w = false;
+    if (w) { bingo(); return; }
+  }
+  let d1 = true, d2 = true;
+  for (let i = 0; i < 5; i++) {
+    if (!g[i][i]) d1 = false;
+    if (!g[i][4-i]) d2 = false;
+  }
+  if (d1 || d2) bingo();
+}
+
+function bingo() {
+  stopAuto();
+  document.getElementById('popup').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
+  document.getElementById('status').textContent = '🎉 አሸንፈሃል! BINGO! 🎉';
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
