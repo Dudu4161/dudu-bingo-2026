@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dudu Bingo 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    min-height: 100vh;
+    padding: 15px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  .box {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .box label { font-size: 13px; display: block; margin-bottom: 6px; }
+  .box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .box button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #ffd700;
+    color: #1e3c72;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .box button:active { transform: scale(0.98); }
+  .last-ball {
+    background: rgba(255,255,255,0.15);
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .last-ball .label { font-size: 11px; letter-spacing: 2px; opacity: 0.7; }
+  .last-ball .ball {
+    display: inline-block;
+    width: 65px;
+    height: 65px;
+    line-height: 65px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #1e3c72;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 6px;
+  }
+  .recent {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    min-height: 28px;
+  }
+  .recent span {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .stats .item { text-align: center; }
+  .stats .num { font-size: 18px; font-weight: bold; color: #ffd700; }
+  .cards-nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .cards-nav button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .cards-nav .info {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffd700;
+    min-width: 100px;
+    text-align: center;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    background: #ffd700;
+    padding: 7px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: #fff;
+    color: #1e3c72;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+  }
+  .cell.marked {
+    background: #1e3c72;
+    color: #ffd700;
+    transform: scale(0.95);
+  }
+  .cell.free {
+    background: #1e3c72;
+    color: #ffd700;
+    font-size: 13px;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .btn {
+    padding: 13px 8px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn.call { background: #ffd700; color: #1e3c72; }
+  .btn.auto { background: #4caf50; color: #fff; }
+  .btn.stop { background: #f44336; color: #fff; }
+  .btn.new { background: #2196f3; color: #fff; }
+  .status {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .rules {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+  }
+  .rules strong { color: #ffd700; }
+  .popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffd700;
+    color: #1e3c72;
+    padding: 30px 40px;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    z-index: 999;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎯 DUDU BINGO 2026</h1>
+
+  <div id="loginSection">
+    <div class="box">
+      <label>ስምህን ጻፍ፦</label>
+      <input type="text" id="playerName" placeholder="e.g. Dudu" maxlength="20">
+      <button id="joinBtn">🚪 ግባ</button>
+    </div>
+  </div>
+
+  <div id="gameSection" class="hidden">
+    <div class="last-ball">
+      <div class="label">LAST CALLED</div>
+      <div class="ball" id="lastBall">-</div>
+    </div>
+
+    <div class="recent" id="recent"></div>
+
+    <div class="stats">
+      <div class="item">
+        <div class="num" id="calledCount">0</div>
+        <div>የተጠሩ</div>
+      </div>
+      <div class="item">
+        <div class="num" id="remainCount">75</div>
+        <div>የቀሩ</div>
+      </div>
+      <div class="item">
+        <div class="num" id="cardsCount">1</div>
+        <div>ካርዶች</div>
+      </div>
+    </div>
+
+    <div class="box" id="cardSelectSection">
+      <label>የካርድ ብዛት ምረጥ (1-600)፦</label>
+      <input type="number" id="cardCount" value="1" min="1" max="600">
+      <button id="selectCardsBtn">🎴 ካርዶች ምረጥ</button>
+    </div>
+
+    <div class="cards-nav hidden" id="cardsNav">
+      <button id="prevCardBtn">◀ ያለፈ</button>
+      <div class="info" id="cardInfo">ካርድ 1 / 1</div>
+      <button id="nextCardBtn">ቀጣይ ▶</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="buttons">
+      <button class="btn call" id="callBtn">📢 Call Number</button>
+      <button class="btn auto" id="autoBtn">▶ Auto Call</button>
+    </div>
+
+    <div class="buttons">
+      <button class="btn new" id="resetBtn">♻️ አዲስ ጨዋታ</button>
+      <button class="btn new" id="newCardBtn">🔄 አዲስ ካርድ</button>
+    </div>
+
+    <div class="status" id="status">ዝግጁ ነው...</div>
+
+    <div class="rules">
+      <strong>📋 የማሸነፊያ ህጎች፦</strong><br><br>
+      <strong>1️⃣ ሰያፍ</strong> — 4 ተከታታይ ሳጥኖች<br>
+      <strong>2️⃣ ቀጥታ</strong> — 4 ተከታታይ ሳጥኖች<br>
+      <strong>3️⃣ አግድም</strong> — 5 ሳጥኖች ሙሉ<br>
+      <strong>4️⃣ ማዕዘን</strong> — 4ቱም ማዕዘኖች
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+  🎉 BINGO! 🎉<br>
+  <button id="closePopupBtn" style="margin-top:15px; padding:10px 25px; border-radius:10px; border:none; background:#1e3c72; color:#ffd700; font-size:16px; font-weight:bold; cursor:pointer;">እሺ</button>
+</div>
+
+<script>
+let playerName = '';
+let myCards = [];
+let activeCardIndex = 0;
+let marked = new Set();
+let called = [];
+let available = [];
+let timer = null;
+let running = false;
+
+function initGame() {
+  available = [];
+  for (let i = 1; i <= 75; i++) available.push(i);
+  called = [];
+  marked = new Set();
+  myCards = [];
+  activeCardIndex = 0;
+  running = false;
+  if (timer) { clearInterval(timer); timer = null; }
+  document.getElementById('lastBall').textContent = '-';
+  document.getElementById('recent').innerHTML = '';
+  document.getElementById('calledCount').textContent = '0';
+  document.getElementById('remainCount').textContent = '75';
+  document.getElementById('cardsCount').textContent = '1';
+  document.getElementById('cardCount').value = '1';
+  document.getElementById('cardSelectSection').classList.remove('hidden');
+  document.getElementById('cardsNav').classList.add('hidden');
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('autoBtn').textContent = '▶ Auto Call';
+  document.getElementById('autoBtn').className = 'btn auto';
+  document.getElementById('status').textContent = 'ዝግጁ ነው...';
+}
+
+document.getElementById('joinBtn').addEventListener('click', function() {
+  var name = document.getElementById('playerName').value.trim();
+  if (!name) { alert('ስምህን ጻፍ!'); return; }
+  playerName = name;
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('gameSection').classList.remove('hidden');
+  initGame();
+  document.getElementById('status').textContent = 'እንኳን ደህና መጣህ ' + playerName + '!';
+});
+
+document.getElementById('selectCardsBtn').addEventListener('click', function() {
+  var count = parseInt(document.getElementById('cardCount').value);
+  if (isNaN(count) || count < 1 || count > 600) { alert('1-600 ብቻ!'); return; }
+  myCards = [];
+  for (var i = 0; i < count; i++) {
+    myCards.push(generateSingleCard());
+  }
+  activeCardIndex = 0;
+  marked = new Set();
+  renderCard(activeCardIndex);
+  document.getElementById('cardsCount').textContent = count;
+  document.getElementById('cardsNav').classList.remove('hidden');
+  document.getElementById('cardSelectSection').classList.add('hidden');
+  document.getElementById('status').textContent = count + ' ካርድ ተመርጧል!';
+});
+
+function generateSingleCard() {
+  var ranges = [
+    {min:1, max:15}, {min:16, max:30}, {min:31, max:45},
+    {min:46, max:60}, {min:61, max:75}
+  ];
+  var card = [];
+  for (var c = 0; c < 5; c++) {
+    var col = [];
+    var r = ranges[c];
+    while (col.length < 5) {
+      var n = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      if (col.indexOf(n) === -1) col.push(n);
+    }
+    card.push(col);
+  }
+  return card;
+}
+
+function renderCard(index) {
+  var card = myCards[index];
+  if (!card) return;
+  var g = document.getElementById('grid');
+  g.innerHTML = '';
+  for (var r = 0; r < 5; r++) {
+    for (var c = 0; c < 5; c++) {
+      var d = document.createElement('div');
+      d.className = 'cell';
+      if (r === 2 && c === 2) {
+        d.textContent = 'FREE';
+        d.classList.add('free');
+        d.dataset.num = 'FREE';
+      } else {
+        d.textContent = card[c][r];
+        d.dataset.num = card[c][r];
+      }
+      d.onclick = function() { toggleCell(this); };
+      g.appendChild(d);
+    }
+  }
+  document.getElementById('cardInfo').textContent = 'ካርድ ' + (index + 1) + ' / ' + myCards.length;
+  autoMarkAll();
+}
+
+document.getElementById('prevCardBtn').addEventListener('click', function() {
+  if (myCards.length <= 1) return;
+  activeCardIndex = (activeCardIndex - 1 + myCards.length) % myCards.length;
+  renderCard(activeCardIndex);
+});
+
+document.getElementById('nextCardBtn').addEventListener('click', function() {
+  if (myCards.length <= 1) return;
+  activeCardIndex = (activeCardIndex + 1) % myCards.length;
+  renderCard(activeCardIndex);
+});
+
+function toggleCell(d) {
+  if (d.dataset.num === 'FREE') return;
+  d.classList.toggle('marked');
+  var n = parseInt(d.dataset.num);
+  if (d.classList.contains('marked')) marked.add(n);
+  else marked.delete(n);
+  checkBingo();
+}
+
+function autoMarkAll() {
+  document.querySelectorAll('.cell').forEach(function(c) {
+    if (c.dataset.num === 'FREE') return;
+    var n = parseInt(c.dataset.num);
+    if (called.indexOf(n) !== -1) {
+      c.classList.add('marked');
+      marked.add(n);
+    } else {
+      c.classList.remove('marked');
+      marked.delete(n);
+    }
+  });
+}
+
+document.getElementById('callBtn').addEventListener('click', function() {
+  if (available.length === 0) { 
+    document.getElementById('status').textContent = 'ሁሉም ቁጥሮች ተጠርተዋል!'; 
+    return; 
+  }
+  var i = Math.floor(Math.random() * available.length);
+  var n = available.splice(i, 1)[0];
+  called.push(n);
+  document.getElementById('lastBall').textContent = n;
+  updateRecent();
+  document.getElementById('calledCount').textContent = called.length;
+  document.getElementById('remainCount').textContent = available.length;
+  autoMarkAll();
+  checkBingo();
+});
+
+document.getElementById('autoBtn').addEventListener('click', function() {
+  if (running) {
+    stopAuto();
+  } else {
+    startAuto();
+  }
+});
+
+function startAuto() {
+  if (available.length === 0) { 
+    document.getElementById('status').textContent = 'ሁሉም ቁጥሮች ተጠርተዋል!'; 
+    return; 
+  }
+  running = true;
+  document.getElementById('autoBtn').textContent = '⏸ Stop Auto';
+  document.getElementById('autoBtn').className = 'btn stop';
+  document.getElementById('status').textContent = 'ቁጥሮች በራሳቸው እየተጠሩ ነው...';
+  timer = setInterval(function() {
+    if (available.length === 0) { stopAuto(); return; }
+    var i = Math.floor(Math.random() * available.length);
+    var n = available.splice(i, 1)[0];
+    called.push(n);
+    document.getElementById('lastBall').textContent = n;
+    updateRecent();
+    document.getElementById('calledCount').textContent = called.length;
+    document.getElementById('remainCount').textContent = available.length;
+    autoMarkAll();
+    checkBingo();
+  }, 3000);
+}
+
+function stopAuto() {
+  running = false;
+  if (timer) { clearInterval(timer); timer = null; }
+  document.getElementById('autoBtn').textContent = '▶ Auto Call';
+  document.getElementById('autoBtn').className = 'btn auto';
+}
+
+function updateRecent() {
+  var c = document.getElementById('recent');
+  c.innerHTML = '';
+  var last = called.slice(-8).reverse();
+  last.forEach(function(n) {
+    var s = document.createElement('span');
+    s.textContent = n;
+    c.appendChild(s);
+  });
+}
+
+function checkBingo() {
+  var cells = document.querySelectorAll('.cell');
+  if (cells.length === 0) return;
+  var g = [];
+  var i = 0;
+  for (var r = 0; r < 5; r++) {
+    g[r] = [];
+    for (var c = 0; c < 5; c++) {
+      var cl = cells[i];
+      g[r][c] = (cl.dataset.num === 'FREE') ? true : cl.classList.contains('marked');
+      i++;
+    }
+  }
+
+  for (var start = 0; start <= 1; start++) {
+    var count = 0;
+    for (var k = start; k < start + 4; k++) if (g[k][k]) count++;
+    if (count >= 4) { showBingo(); return; }
+  }
+  for (var start = 0; start <= 1; start++) {
+    var count = 0;
+    for (var k = start; k < start + 4; k++) if (g[k][4 - k]) count++;
+    if (count >= 4) { showBingo(); return; }
+  }
+
+  for (var c = 0; c < 5; c++) {
+    for (var start = 0; start <= 1; start++) {
+      var count = 0;
+      for (var r = start; r < start + 4; r++) if (g[r][c]) count++;
+      if (count >= 4) { showBingo(); return; }
+    }
+  }
+
+  for (var r = 0; r < 5; r++) {
+    if (g[r].every(function(v) { return v; })) { showBingo(); return; }
+  }
+
+  if (g[0][0] && g[0][4] && g[4][0] && g[4][4]) {
+    showBingo(); return;
+  }
+}
+
+function showBingo() {
+  stopAuto();
+  document.getElementById('popup').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
+  document.getElementById('status').textContent = '🎉 አሸንፈሃል! BINGO! 🎉';
+}
+
+document.getElementById('closePopupBtn').addEventListener('click', closePopup);
+document.getElementById('overlay').addEventListener('click', closePopup);
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+}
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+  if (!confirm('አዲስ ጨዋታ ጀምር?')) return;
+  initGame();
+  document.getElementById('status').textContent = 'አዲስ ጨዋታ! ካርድ ምረጥ።';
+});
+
+document.getElementById('newCardBtn').addEventListener('click', function() {
+  if (!confirm('አዲስ ካርድ ፍጠር?')) return;
+  document.getElementById('cardSelectSection').classList.remove('hidden');
+  document.getElementById('cardsNav').classList.add('hidden');
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('status').textContent = 'ካርድ ምረጥ።';
+});
+</script>
+</body>
+</html>
