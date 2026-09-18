@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUDU BINGO 2026</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, "Noto Sans Ethiopic", sans-serif;
+    background: #f2f4f8;
+    color: #17202a;
+  }
+  .container { max-width: 700px; margin: auto; padding: 12px; }
+  .header {
+    background: linear-gradient(135deg, #151515, #343434);
+    color: white;
+    padding: 18px 12px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px #0002;
+  }
+  .header h1 { margin: 0; font-size: 27px; }
+  .header p { margin: 6px 0 0; font-size: 14px; }
+  .login {
+    background: white;
+    padding: 18px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+  }
+  .login label {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  .login input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .primary { width: 100%; background: #111; color: white; }
+  .primary:disabled { opacity: 0.5; }
+  .info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .infoBox {
+    background: white;
+    border-radius: 12px;
+    padding: 10px 5px;
+    text-align: center;
+    box-shadow: 0 2px 6px #0001;
+  }
+  .infoBox small { display: block; color: #777; font-size: 11px; }
+  .infoBox strong { display: block; font-size: 20px; margin-top: 3px; }
+  .current {
+    background: #111;
+    color: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .current .label { font-size: 13px; opacity: 0.8; }
+  .currentNumber {
+    font-size: 65px;
+    font-weight: 900;
+    margin: 4px 0;
+  }
+  .currentAmharic { font-size: 18px; }
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .call { background: #e63946; color: white; }
+  .auto { background: #2a9d8f; color: white; }
+  .stop { background: #555; color: white; }
+  .newBtn { background: #111; color: white; }
+  .section {
+    background: white;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .sectionTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .recent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .recent span {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eee;
+    font-weight: bold;
+  }
+  .playersList {
+    font-size: 14px;
+  }
+  .playerRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 4px;
+    border-bottom: 1px solid #eee;
+  }
+  .playerRow:last-child { border-bottom: none; }
+  .playerRow .admin { color: #e63946; font-weight: bold; }
+  .playerRow .name { font-weight: bold; }
+  .cardSelector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .cardSelector input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .cardSelector button {
+    background: #111;
+    color: white;
+    white-space: nowrap;
+  }
+  .cardsNav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .cardsNav button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: #111;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .cardsNav .info {
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+    min-width: 120px;
+    text-align: center;
+  }
+  .bingoCard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .bingoHead {
+    background: #111;
+    color: white;
+    padding: 11px 2px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+  .cell {
+    min-height: 58px;
+    background: #f4f4f4;
+    border: 2px solid #ddd;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    font-weight: bold;
+  }
+  .cell.called {
+    background: #ffd166;
+    border-color: #e9a900;
+  }
+  .cell.free {
+    background: #222;
+    color: white;
+    font-size: 13px;
+  }
+  .cardLabel {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+    padding: 8px;
+    background: #f4f4f4;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .numberGrid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+  }
+  .number {
+    aspect-ratio: 1;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .number.called { background: #e63946; color: white; }
+  .bingoButton {
+    width: 100%;
+    background: #f4a261;
+    color: #111;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  .popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0009;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .popupBox {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .popupBox h2 { font-size: 35px; margin: 0 0 10px; }
+  .popupBox p { font-size: 17px; }
+  .popupBox button { background: #111; color: white; width: 100%; }
+  .footer {
+    text-align: center;
+    color: #777;
+    font-size: 12px;
+    padding: 15px;
+  }
+  .hidden { display: none !important; }
+  @media(max-width: 420px) {
+    .numberGrid { grid-template-columns: repeat(8, 1fr); }
+    .cell { min-height: 52px; font-size: 18px; }
+    .currentNumber { font-size: 55px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🎯 DUDU BINGO 2026</h1>
+    <p>የኦንላይን ቢንጎ ጨዋታ</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="login" id="loginSection">
+    <label>ስምዎን ያስገቡ</label>
+    <input id="playerName" placeholder="ስም">
+    <label>የክፍል ኮድ (Room Code)</label>
+    <input id="roomCode" placeholder="ለምሳሌ፦ 1234">
+    <button class="primary" id="joinBtn">🚪 ግባ</button>
+    <p style="font-size:12px;color:#777;margin-top:10px;text-align:center;">
+      አዲስ ክፍል ለመክፈት አዲስ ኮድ ጻፍ
+    </p>
+  </div>
+
+  <!-- GAME -->
+  <div id="gameSection" class="hidden">
+    <div class="info">
+      <div class="infoBox">
+        <small>ክፍል</small>
+        <strong id="roomDisplay">-</strong>
+      </div>
+      <div class="infoBox">
+        <small>ተጫዋቾች</small>
+        <strong id="playersCount">0</strong>
+      </div>
+      <div class="infoBox">
+        <small>የተጠሩ</small>
+        <strong id="calledCount">0</strong>
+      </div>
+    </div>
+
+    <div class="current">
+      <div class="label">አሁን የተጠራው ቁጥር</div>
+      <div class="currentNumber" id="currentNumber">--</div>
+      <div class="currentAmharic" id="currentAmharic">ጨዋታው አልጀመረም</div>
+    </div>
+
+    <div class="controls" id="adminControls" style="display:none;">
+      <button class="call" id="callBtn">📢 ቁጥር ጥራ</button>
+      <button class="auto" id="autoBtn">▶️ Auto</button>
+      <button class="stop" id="stopBtn">⏹ አቁም</button>
+      <button class="newBtn" id="newGameBtn">🔄 አዲስ ጨዋታ</button>
+    </div>
+
+    <div class="section">
+      <div class="sectionTitle">👥 ተጫዋቾች</div>
+      <div class="playersList" id="playersList"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionTitle">🕘 የቅርብ ጊዜ የተጠሩ ቁጥሮች</div>
+      <div class="recent" id="recent"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionTitle">🎫 የBingo ካርዶች</div>
+
+      <div class="cardSelector" id="cardSelectSection">
+        <input type="number" id="cardNumberInput" placeholder="1 - 600" min="1" max="600" value="5">
+        <button id="createCardsBtn">ካርዶች ፍጠር</button>
+      </div>
+
+      <div class="cardsNav hidden" id="cardsNav">
+        <button id="prevCardBtn">◀ ያለፈ</button>
+        <div class="info" id="cardInfo">ካርድ 1 / 1</div>
+        <button id="nextCardBtn">ቀጣይ ▶</button>
+      </div>
+
+      <div class="cardLabel hidden" id="cardLabel">ካርድ #1</div>
+
+      <div class="bingoCard hidden" id="bingoCardGrid">
+        <div class="bingoHead">B</div>
+        <div class="bingoHead">I</div>
+        <div class="bingoHead">N</div>
+        <div class="bingoHead">G</div>
+        <div class="bingoHead">O</div>
+
+        <div class="cell" id="c0"></div>
+        <div class="cell" id="c1"></div>
+        <div class="cell" id="c2"></div>
+        <div class="cell" id="c3"></div>
+        <div class="cell" id="c4"></div>
+
+        <div class="cell" id="c5"></div>
+        <div class="cell" id="c6"></div>
+        <div class="cell" id="c7"></div>
+        <div class="cell" id="c8"></div>
+        <div class="cell" id="c9"></div>
+
+        <div class="cell" id="c10"></div>
+        <div class="cell" id="c11"></div>
+        <div class="cell free" id="c12">FREE</div>
+        <div class="cell" id="c13"></div>
+        <div class="cell" id="c14"></div>
+
+        <div class="cell" id="c15"></div>
+        <div class="cell" id="c16"></div>
+        <div class="cell" id="c17"></div>
+        <div class="cell" id="c18"></div>
+        <div class="cell" id="c19"></div>
+
+        <div class="cell" id="c20"></div>
+        <div class="cell" id="c21"></div>
+        <div class="cell" id="c22"></div>
+        <div class="cell" id="c23"></div>
+        <div class="cell" id="c24"></div>
+      </div>
+
+      <button class="bingoButton hidden" id="bingoBtn">🏆 BINGO!</button>
+    </div>
+
+    <div class="section">
+      <div class="sectionTitle">🔢 የቢንጎ ቁጥሮች 1 - 75</div>
+      <div class="numberGrid" id="numberGrid"></div>
+    </div>
+
+    <div class="footer">DUDU BINGO 2026</div>
+  </div>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popupBox">
+    <h2>🎉 BINGO!</h2>
+    <p id="winnerText">እንኳን ደስ አለዎት!</p>
+    <button id="closePopupBtn">ዝጋ</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBviQuIil06bUumjd0mIgsdUXs4rU_5-RE",
+  authDomain: "dudu-bingo-v2.firebaseapp.com",
+  projectId: "dudu-bingo-v2",
+  storageBucket: "dudu-bingo-v2.firebasestorage.app",
+  messagingSenderId: "336020243425",
+  appId: "1:336020243425:web:0d3a1f0254d7a7c8f188a0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let playerName = "";
+let roomCode = "";
+let isAdmin = false;
+let calledNumbers = [];
+let autoTimer = null;
+let cards = [];
+let activeCardIndex = 0;
+let roomData = null;
+let unsubscribeRoom = null;
+let unsubscribePlayers = null;
+
+const amharicNumbers = {
+  1:"አንድ",2:"ሁለት",3:"ሶስት",4:"አራት",5:"አምስት",
+  6:"ስድስት",7:"ሰባት",8:"ስምንት",9:"ዘጠኝ",10:"አስር",
+  11:"አስራ አንድ",12:"አስራ ሁለት",13:"አስራ ሶስት",14:"አስራ አራት",15:"አስራ አምስት",
+  16:"አስራ ስድስት",17:"አስራ ሰባት",18:"አስራ ስምንት",19:"አስራ ዘጠኝ",20:"ሃያ",
+  21:"ሃያ አንድ",22:"ሃያ ሁለት",23:"ሃያ ሶስት",24:"ሃያ አራት",25:"ሃያ አምስት",
+  26:"ሃያ ስድስት",27:"ሃያ ሰባት",28:"ሃያ ስምንት",29:"ሃያ ዘጠኝ",30:"ሰላሳ",
+  31:"ሰላሳ አንድ",32:"ሰላሳ ሁለት",33:"ሰላሳ ሶስት",34:"ሰላሳ አራት",35:"ሰላሳ አምስት",
+  36:"ሰላሳ ስድስት",37:"ሰላሳ ሰባት",38:"ሰላሳ ስምንት",39:"ሰላሳ ዘጠኝ",40:"አርባ",
+  41:"አርባ አንድ",42:"አርባ ሁለት",43:"አርባ ሶስት",44:"አርባ አራት",45:"አርባ አምስት",
+  46:"አርባ ስድስት",47:"አርባ ሰባት",48:"አርባ ስምንት",49:"አርባ ዘጠኝ",50:"ሃምሳ",
+  51:"ሃምሳ አንድ",52:"ሃምሳ ሁለት",53:"ሃምሳ ሶስት",54:"ሃምሳ አራት",55:"ሃምሳ አምስት",
+  56:"ሃምሳ ስድስት",57:"ሃምሳ ሰባት",58:"ሃምሳ ስምንት",59:"ሃምሳ ዘጠኝ",60:"ስልሳ",
+  61:"ስልሳ አንድ",62:"ስልሳ ሁለት",63:"ስልሳ ሶስት",64:"ስልሳ አራት",65:"ስልሳ አምስት",
+  66:"ስልሳ ስድስት",67:"ስልሳ ሰባት",68:"ስልሳ ስምንት",69:"ስልሳ ዘጠኝ",70:"ሰባ",
+  71:"ሰባ አንድ",72:"ሰባ ሁለት",73:"ሰባ ሶስት",74:"ሰባ አራት",75:"ሰባ አምስት"
+};
+
+function createNumberBoard() {
+  var grid = document.getElementById('numberGrid');
+  grid.innerHTML = '';
+  for (var i = 1; i <= 75; i++) {
+    var div = document.createElement('div');
+    div.className = 'number';
+    div.id = 'num-' + i;
+    div.textContent = i;
+    grid.appendChild(div);
+  }
+}
+
+function randomFromRange(min, max, used) {
+  var n;
+  do {
+    n = Math.floor(Math.random() * (max - min + 1)) + min;
+  } while (used.indexOf(n) !== -1);
+  return n;
+}
+
+function generateSingleCard() {
+  var card = [];
+  var ranges = [[1,15],[16,30],[31,45],[46,60],[61,75]];
+  for (var row = 0; row < 5; row++) {
+    for (var col = 0; col < 5; col++) {
+      if (row === 2 && col === 2) { card.push(0); continue; }
+      var used = card.filter(function(x) { return x !== 0; });
+      var n = randomFromRange(ranges[col][0], ranges[col][1], used);
+      card.push(n);
+    }
+  }
+  return card;
+}
+
+function updateCardInfo() {
+  document.getElementById('cardInfo').textContent = 'ካርድ ' + (activeCardIndex + 1) + ' / ' + cards.length;
+  document.getElementById('cardLabel').textContent = 'ካርድ #' + (activeCardIndex + 1);
+}
+
+function showActiveCard() {
+  var card = cards[activeCardIndex];
+  if (!card) return;
+  for (var i = 0; i < 25; i++) {
+    var cell = document.getElementById('c' + i);
+    cell.classList.remove('called');
+    if (i === 12) { cell.textContent = 'FREE'; continue; }
+    cell.textContent = card[i];
+  }
+  updateCardInfo();
+  updateCardCalled();
+}
+
+function updateCardCalled() {
+  var card = cards[activeCardIndex];
+  if (!card) return;
+  for (var i = 0; i < 25; i++) {
+    var cell = document.getElementById('c' + i);
+    cell.classList.remove('called');
+    if (i === 12) continue;
+    if (calledNumbers.indexOf(card[i]) !== -1) cell.classList.add('called');
+  }
+}
+
+function updateRecent() {
+  var box = document.getElementById('recent');
+  box.innerHTML = '';
+  var recent = calledNumbers.slice(-10).reverse();
+  recent.forEach(function(n) {
+    var span = document.createElement('span');
+    span.textContent = n;
+    box.appendChild(span);
+  });
+}
+
+function showCalled(number) {
+  document.getElementById('currentNumber').textContent = number;
+  document.getElementById('currentAmharic').textContent = amharicNumbers[number] || '';
+  document.getElementById('calledCount').textContent = calledNumbers.length;
+  var numberElement = document.getElementById('num-' + number);
+  if (numberElement) numberElement.classList.add('called');
+  updateCardCalled();
+  updateRecent();
+}
+
+function checkCardBingo(card) {
+  if (!card || card.length === 0) return false;
+  for (var r = 0; r < 5; r++) {
+    var ok = true;
+    for (var c = 0; c < 5; c++) {
+      var index = r * 5 + c;
+      if (index === 12) continue;
+      if (calledNumbers.indexOf(card[index]) === -1) ok = false;
+    }
+    if (ok) return true;
+  }
+  for (var c = 0; c < 5; c++) {
+    var ok = true;
+    for (var r = 0; r < 5; r++) {
+      var index = r * 5 + c;
+      if (index === 12) continue;
+      if (calledNumbers.indexOf(card[index]) === -1) ok = false;
+    }
+    if (ok) return true;
+  }
+  var diag1 = true, diag2 = true;
+  for (var i = 0; i < 5; i++) {
+    var a = i * 5 + i;
+    var b = i * 5 + (4 - i);
+    if (a !== 12 && calledNumbers.indexOf(card[a]) === -1) diag1 = false;
+    if (b !== 12 && calledNumbers.indexOf(card[b]) === -1) diag2 = false;
+  }
+  if (diag1 || diag2) return true;
+  var corners = [0, 4, 20, 24];
+  var allCorners = true;
+  for (var k = 0; k < corners.length; k++) {
+    if (calledNumbers.indexOf(card[corners[k]]) === -1) allCorners = false;
+  }
+  if (allCorners) return true;
+  return false;
+}
+
+// ========== JOIN ROOM ==========
+document.getElementById('joinBtn').addEventListener('click', async function() {
+  var nameInput = document.getElementById('playerName');
+  var roomInput = document.getElementById('roomCode');
+  var name = nameInput.value.trim();
+  var code = roomInput.value.trim();
+  
+  if (!name) { alert('ስምዎን ያስገቡ'); return; }
+  if (!code) { alert('የክፍል ኮድ ያስገቡ'); return; }
+  
+  playerName = name;
+  roomCode = code;
+  
+  var roomRef = doc(db, 'rooms', roomCode);
+  var roomSnap = await getDoc(roomRef);
+  
+  if (!roomSnap.exists()) {
+    isAdmin = true;
+    await setDoc(roomRef, {
+      admin: playerName,
+      createdAt: Date.now(),
+      called: [],
+      available: Array.from({length: 75}, function(_, i) { return i + 1; }),
+      lastCalled: null
+    });
+  } else {
+    var data = roomSnap.data();
+    isAdmin = (data.admin === playerName);
+  }
+  
+  await setDoc(doc(db, 'rooms', roomCode, 'players', playerName), {
+    name: playerName,
+    isAdmin: isAdmin,
+    cards: [],
+    joinedAt: Date.now()
+  });
+  
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('gameSection').classList.remove('hidden');
+  document.getElementById('roomDisplay').textContent = roomCode;
+  
+  if (isAdmin) {
+    document.getElementById('adminControls').style.display = 'grid';
+  }
+  
+  createNumberBoard();
+  listenToRoom();
+  listenToPlayers();
+});
+
+// ========== LISTEN ROOM ==========
+function listenToRoom() {
+  if (unsubscribeRoom) unsubscribeRoom();
+  unsubscribeRoom = onSnapshot(doc(db, 'rooms', roomCode), function(snap) {
+    if (!snap.exists()) return;
+    roomData = snap.data();
+    calledNumbers = roomData.called || [];
+    
+    document.getElementById('calledCount').textContent = calledNumbers.length;
+    if (roomData.lastCalled) {
+      document.getElementById('currentNumber').textContent = roomData.lastCalled;
+      document.getElementById('currentAmharic').textContent = amharicNumbers[roomData.lastCalled] || '';
+    }
+    
+    document.querySelectorAll('.number').forEach(function(el) { el.classList.remove('called'); });
+    calledNumbers.forEach(function(n) {
+      var el = document.getElementById('num-' + n);
+      if (el) el.classList.add('called');
+    });
+    
+    updateRecent();
+    updateCardCalled();
+    checkAllCards();
+  });
+}
+
+function listenToPlayers() {
+  if (unsubscribePlayers) unsubscribePlayers();
+  unsubscribePlayers = onSnapshot(collection(db, 'rooms', roomCode, 'players'), function(snap) {
+    var list = document.getElementById('playersList');
+    list.innerHTML = '';
+    document.getElementById('playersCount').textContent = snap.size;
+    
+    snap.forEach(function(d) {
+      var p = d.data();
+      var div = document.createElement('div');
+      div.className = 'playerRow';
+      div.innerHTML = '<span class="name ' + (p.isAdmin ? 'admin' : '') + '">' + (p.isAdmin ? '👑 ' : '👤 ') + p.name + '</span><span>' + (p.cards ? p.cards.length : 0) + ' ካርድ</span>';
+      list.appendChild(div);
+    });
+  });
+}
+
+// ========== CREATE CARDS ==========
+document.getElementById('createCardsBtn').addEventListener('click', async function() {
+  var count = parseInt(document.getElementById('cardNumberInput').value);
+  if (isNaN(count) || count < 1 || count > 600) { alert('1-600 ብቻ!'); return; }
+  
+  cards = [];
+  for (var i = 0; i < count; i++) cards.push(generateSingleCard());
+  activeCardIndex = 0;
+  
+  await updateDoc(doc(db, 'rooms', roomCode, 'players', playerName), { cards: cards });
+  
+  document.getElementById('cardsNav').classList.remove('hidden');
+  document.getElementById('cardLabel').classList.remove('hidden');
+  document.getElementById('bingoCardGrid').classList.remove('hidden');
+  document.getElementById('bingoBtn').classList.remove('hidden');
+  document.getElementById('cardSelectSection').classList.add('hidden');
+  
+  showActiveCard();
+  alert(count + ' ካርዶች ተፈጥረዋል! 🎴');
+});
+
+document.getElementById('prevCardBtn').addEventListener('click', function() {
+  if (cards.length <= 1) return;
+  activeCardIndex = (activeCardIndex - 1 + cards.length) % cards.length;
+  showActiveCard();
+});
+
+document.getElementById('nextCardBtn').addEventListener('click', function() {
+  if (cards.length <= 1) return;
+  activeCardIndex = (activeCardIndex + 1) % cards.length;
+  showActiveCard();
+});
+
+// ========== ADMIN: CALL NUMBER ==========
+async function callNumber() {
+  if (!isAdmin) return;
+  if (!roomData) return;
+  var available = roomData.available || [];
+  if (available.length === 0) { stopAuto(); return; }
+  
+  var index = Math.floor(Math.random() * available.length);
+  var number = available[index];
+  var newAvailable = available.filter(function(x) { return x !== number; });
+  var newCalled = (roomData.called || []).concat([number]);
+  
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    available: newAvailable,
+    called: newCalled,
+    lastCalled: number
+  });
+}
+
+document.getElementById('callBtn').addEventListener('click', callNumber);
+
+document.getElementById('autoBtn').addEventListener('click', function() {
+  if (autoTimer) { stopAuto(); return; }
+  callNumber();
+  autoTimer = setInterval(callNumber, 3000);
+});
+
+document.getElementById('stopBtn').addEventListener('click', stopAuto);
+
+function stopAuto() {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+}
+
+document.getElementById('newGameBtn').addEventListener('click', async function() {
+  if (!isAdmin) return;
+  if (!confirm('አዲስ ጨዋታ ጀምር?')) return;
+  stopAuto();
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    called: [],
+    available: Array.from({length: 75}, function(_, i) { return i + 1; }),
+    lastCalled: null
+  });
+  document.querySelectorAll('.number').forEach(function(el) { el.classList.remove('called'); });
+  document.getElementById('currentNumber').textContent = '--';
+  document.getElementById('currentAmharic').textContent = 'ጨዋታው አልጀመረም';
+});
+
+// ========== BINGO ==========
+function checkAllCards() {
+  if (cards.length === 0) return;
+  for (var i = 0; i < cards.length; i++) {
+    if (checkCardBingo(cards[i])) {
+      stopAuto();
+      document.getElementById('winnerText').textContent = playerName + ' እንኳን ደስ አለ
